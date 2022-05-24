@@ -1,0 +1,10 @@
+modules:
+  jira:globalPage:
+    - key: forge-scheduled-trigger-lab-hello-world
+      function: main
+      title: forge-scheduled-trigger-lab
+  function:
+    - key: main
+      handler: index.run
+app:
+  id: ari:cloud:ecosystem::app/e97f7133-72c2-42fa-9c72-96b032580f0f
