@@ -3,8 +3,24 @@ modules:
     - key: forge-scheduled-trigger-lab-hello-world
       function: main
       title: forge-scheduled-trigger-lab
+  webtrigger:
+    - key: temporary-development-webtrigger
+      function: scheduledWebTrigger
+    - key: motd-listener
+      function: motdListener
   function:
     - key: main
       handler: index.run
+    - key: motdListener
+      handler: index.listener
+    - key: scheduledWebTrigger
+      handler: scheduledWebTrigger.runWebTrigger
+permissions:
+  scopes:
+    - "storage:app"
+  external:
+    fetch:
+      backend:
+        - '*.atlassian-dev.net'
 app:
   id: ari:cloud:ecosystem::app/e97f7133-72c2-42fa-9c72-96b032580f0f
