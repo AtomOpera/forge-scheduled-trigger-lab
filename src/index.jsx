@@ -7,6 +7,8 @@ import ForgeUI, {
   render,
   useState,
   Button,
+  Form,
+  TextField,
 } from "@forge/ui";
 import { webTrigger, storage, fetch } from "@forge/api";
 
@@ -32,17 +34,18 @@ export async function listener(req) {
   }
 }
 
-export const sendMessage = async (req) => {
+export const sendMessage = async (req, mes) => {
+  console.log('req', req);
   const response = await fetch(req.trigger, {
-    body: JSON.stringify({ motd: "hello from sendMessage" }),
+    body: JSON.stringify({ motd: mes || "hello from sendMessage" }),
     headers: {
       "Content-Type": "application/json"
     },
     method: "POST"
   })
-  console.log('response', response);
+  // console.log('response', response);
   console.log(`Response: ${response.status} ${response.statusText}`);
-  console.log(await response.json());
+  // console.log(await response.json());
 };
 
 // useState is needed to wrap functions that return a promise
@@ -54,6 +57,20 @@ const App = () => {
   const dataCmd = `"{\\"motd\\":\\"Hello\\"}"`;
   const sampleCurlCmd = `curl -X POST ${trigger} --data ${dataCmd}`;
 
+  // useState is a UI kit hook we use to manage the form data in local state
+  const [formState, setFormState] = useState(undefined);
+
+  // Handles form submission, which is a good place to call APIs, or to set component state...
+  const onSubmit = async (formData) => {
+    /**
+     * formData:
+     * {
+     *    username: 'Username',
+     * }
+     */
+    setFormState(formData);
+  };
+
   return (
     <Fragment>
       <Heading>Set today's message</Heading>
@@ -64,12 +81,20 @@ const App = () => {
       <Code text={sampleCurlCmd} language="shell" />
       {/* <Code text={`curl -X POST ${trigger} --data "{\\"motd\\":\\"Hello\\"}"`} language="shell" /> */}
       <Text>Or just manually here:</Text>
-      <Button
+      <Form
+        onSubmit={async (formData) => {
+          await sendMessage({ trigger }, formData.message);
+        }}
+        submitButtonText="Send message"
+      >
+        <TextField name="message" label="message" />
+      </Form>
+      {/* <Button
         text="Send message"
         onClick={async () => {
           await sendMessage({ trigger });
         }}
-      />
+      /> */}
       <Heading>View today's message</Heading>
       <Text>{motd ? motd : "Message not set"}</Text>
     </Fragment>
