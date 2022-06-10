@@ -34,6 +34,7 @@ export async function listener(req) {
   }
 }
 
+// Send message function
 export const sendMessage = async (req, mes) => {
   console.log('req', req);
   const response = await fetch(req.trigger, {
