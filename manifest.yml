@@ -7,9 +7,11 @@ modules:
     # The webtrigger module invokes a function as the result of an HTTP request
     - key: motd-listener # regular web trigger
       function: motdListener
+  scheduledTrigger:
     # a scheduled trigger will repeatedly invoke a function on a scheduled interval
     - key: temporary-development-webtrigger # scheduled one
       function: scheduledWebTrigger
+      interval: hour
   function:
     - key: main
       handler: index.run
@@ -17,7 +19,6 @@ modules:
       handler: index.listener
     - key: scheduledWebTrigger
       handler: index.runWebTrigger
-      interval: hour
 permissions:
   scopes:
     - "storage:app"
