@@ -4,17 +4,20 @@ modules:
       function: main
       title: forge-scheduled-trigger-lab
   webtrigger:
-    - key: temporary-development-webtrigger
-      function: scheduledWebTrigger
-    - key: motd-listener
+    # The webtrigger module invokes a function as the result of an HTTP request
+    - key: motd-listener # regular web trigger
       function: motdListener
+    # a scheduled trigger will repeatedly invoke a function on a scheduled interval
+    - key: temporary-development-webtrigger # scheduled one
+      function: scheduledWebTrigger
   function:
     - key: main
       handler: index.run
     - key: motdListener
       handler: index.listener
     - key: scheduledWebTrigger
-      handler: scheduledWebTrigger.runWebTrigger
+      handler: index.runWebTrigger
+      interval: hour
 permissions:
   scopes:
     - "storage:app"

@@ -34,6 +34,27 @@ export async function listener(req) {
   }
 }
 
+// The `runWebTrigger` function is called repeatedly in an scheduled way
+export async function runWebTrigger() {
+  console.log('scheduled!');
+  try {
+    await storage.set("motd", "hahahahaha scheduled");
+    return {
+      body: "Success: Message updated\n",
+      headers: { "Content-Type": ["application/json"] },
+      statusCode: 200,
+      statusText: "OK",
+    };
+  } catch (error) {
+    return {
+      body: error + "\n",
+      headers: { "Content-Type": ["application/json"] },
+      statusCode: 400,
+      statusText: "Bad Request",
+    }
+  }
+}
+
 // Send message function
 export const sendMessage = async (req, mes) => {
   console.log('req', req);
