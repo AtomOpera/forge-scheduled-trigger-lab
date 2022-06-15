@@ -12,12 +12,17 @@ import ForgeUI, {
 } from "@forge/ui";
 import { webTrigger, storage, fetch } from "@forge/api";
 
+// The scheduledTrigger module repeatedly invokes a function on a scheduled interval. 
+// Each trigger is scheduled to start shortly after it is created, about 5 minutes after app deployment. 
+// It then runs based on the configured interval hour , day or week.
+
 // The `listener` function is called when the webtrigger is invoked
 export async function listener(req) {
   try {
     const body = JSON.parse(req.body);
     const newmotd = body.motd;
-    await storage.set("motd", newmotd);
+    const newDate = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' });
+    await storage.set("motd", `${newDate} - ${newmotd}`);
     return {
       body: "Success: Message updated\n",
       headers: { "Content-Type": ["application/json"] },
@@ -37,8 +42,9 @@ export async function listener(req) {
 // The `runWebTrigger` function is called repeatedly in an scheduled way
 export async function runWebTrigger() {
   console.log('scheduled!');
+  const newDate = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' });
   try {
-    await storage.set("motd", "hahahahaha scheduled");
+    await storage.set("motd", `${newDate} - auto scheduled`);
     return {
       body: "Success: Message updated\n",
       headers: { "Content-Type": ["application/json"] },
@@ -73,7 +79,7 @@ export const sendMessage = async (req, mes) => {
 // useState is needed to wrap functions that return a promise
 const App = () => {
   const [motd] = useState(storage.get("motd"));
-  const [trigger] = useState(webTrigger.getUrl("motd-listener"));
+  const [trigger] = useState(webTrigger.getUrl("motd-listener")); // getting the URL here. Same for the scheduled trigger.
   const dataBash = JSON.stringify({ motd: "Hello, world!" });
   const sampleCurlBash = `curl -X POST ${trigger} --data '${dataBash}'`;
   const dataCmd = `"{\\"motd\\":\\"Hello\\"}"`;
